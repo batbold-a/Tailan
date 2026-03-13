@@ -14,8 +14,10 @@ import { supabase } from '../lib/supabase';
 import { Assignment, FrequencyType, TargetType } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { cn } from '../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const AssignmentsPage = () => {
+  const { t } = useTranslation();
   const { session } = useAuth();
   const [assignments, setAssignments] = React.useState<Assignment[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -92,7 +94,7 @@ export const AssignmentsPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this assignment? All associated plans and actuals will be removed.')) return;
+    if (!confirm(t('assignments.alert_delete'))) return;
     await supabase.from('assignments').delete().eq('id', id);
     fetchAssignments();
   };
@@ -135,13 +137,13 @@ export const AssignmentsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Assignments</h1>
-          <p className="text-slate-500 mt-1">Manage your annual targets and work categories.</p>
+          <h1 className="text-3xl font-bold text-slate-900">{t('assignments.title')}</h1>
+          <p className="text-slate-500 mt-1">{t('assignments.subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <Button variant="outline" className="gap-2" onClick={() => setIsBulkOpen(true)}>
             <Upload className="w-4 h-4" />
-            Bulk Import
+            {t('assignments.bulk_import')}
           </Button>
           <Button className="gap-2" onClick={() => {
             setEditingAsg(null);
@@ -157,7 +159,7 @@ export const AssignmentsPage = () => {
             setIsModalOpen(true);
           }}>
             <Plus className="w-4 h-4" />
-            New Assignment
+            {t('assignments.new_assignment')}
           </Button>
         </div>
       </div>
@@ -167,7 +169,7 @@ export const AssignmentsPage = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <Input 
-              placeholder="Search assignments..." 
+              placeholder={t('assignments.search_placeholder')} 
               className="pl-10"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -189,11 +191,11 @@ export const AssignmentsPage = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                <th className="pb-3">Name</th>
-                <th className="pb-3">Category</th>
-                <th className="pb-3">Type</th>
-                <th className="pb-3">Annual Target</th>
-                <th className="pb-3 text-right">Actions</th>
+                <th className="pb-3 px-4">{t('assignments.col_name')}</th>
+                <th className="pb-3 px-4">{t('assignments.col_category')}</th>
+                <th className="pb-3 px-4">{t('assignments.col_type')}</th>
+                <th className="pb-3 px-4">{t('assignments.col_target')}</th>
+                <th className="pb-3 px-4 text-right">{t('assignments.col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -206,16 +208,16 @@ export const AssignmentsPage = () => {
               ) : filtered.length > 0 ? (
                 filtered.map((asg) => (
                   <tr key={asg.id} className="group hover:bg-slate-50 transition-colors">
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <div className="font-medium text-slate-900">{asg.name}</div>
                       {asg.notes && <div className="text-xs text-slate-500 truncate max-w-xs">{asg.notes}</div>}
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
                         {asg.category}
                       </span>
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <span className={cn(
                         "text-xs font-medium px-2 py-0.5 rounded-full",
                         asg.target_type === 'Percentage' ? "bg-indigo-50 text-indigo-700" : "bg-slate-100 text-slate-600"
@@ -223,10 +225,10 @@ export const AssignmentsPage = () => {
                         {asg.target_type}
                       </span>
                     </td>
-                    <td className="py-4 text-sm text-slate-900 font-mono font-semibold">
+                    <td className="py-4 px-4 text-sm text-slate-900 font-mono font-semibold">
                       {asg.annual_target}{asg.target_type === 'Percentage' ? '%' : (asg.unit ? ` ${asg.unit}` : '')}
                     </td>
-                    <td className="py-4 text-right">
+                    <td className="py-4 px-4 text-right">
                       <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => {
@@ -259,7 +261,7 @@ export const AssignmentsPage = () => {
               ) : (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-slate-500">
-                    No assignments found. Create one to get started!
+                    {t('assignments.empty_state')}
                   </td>
                 </tr>
               )}
@@ -274,7 +276,7 @@ export const AssignmentsPage = () => {
           <Card className="w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-slate-900">
-                {editingAsg ? 'Edit Assignment' : 'New Assignment'}
+                {editingAsg ? t('assignments.edit_title') : t('assignments.new_title')}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-6 h-6" />
@@ -283,58 +285,58 @@ export const AssignmentsPage = () => {
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <Label htmlFor="name">Assignment Name</Label>
+                <Label htmlFor="name">{t('assignments.label_name')}</Label>
                 <Input 
                   id="name" 
                   required 
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="e.g. Monthly Safety Audit" 
+                  placeholder={t('assignments.placeholder_name')} 
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="category">Category</Label>
+                  <Label htmlFor="category">{t('assignments.label_category')}</Label>
                   <Input 
                     id="category" 
                     required 
                     value={formData.category}
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    placeholder="e.g. Operations" 
+                    placeholder={t('assignments.placeholder_category')} 
                   />
                 </div>
                 <div>
-                  <Label htmlFor="frequency">Frequency</Label>
+                  <Label htmlFor="frequency">{t('assignments.label_frequency')}</Label>
                   <select 
                     id="frequency"
                     className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900"
                     value={formData.frequency_type}
                     onChange={(e) => setFormData({...formData, frequency_type: e.target.value as FrequencyType})}
                   >
-                    <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
-                    <option value="Yearly">Yearly</option>
-                    <option value="Custom">Custom</option>
+                    <option value="Monthly">{t('assignments.freq_monthly')}</option>
+                    <option value="Quarterly">{t('assignments.freq_quarterly')}</option>
+                    <option value="Yearly">{t('assignments.freq_yearly')}</option>
+                    <option value="Custom">{t('assignments.freq_custom')}</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="target_type">Target Type</Label>
+                  <Label htmlFor="target_type">{t('assignments.label_target_type')}</Label>
                   <select 
                     id="target_type"
                     className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900"
                     value={formData.target_type}
                     onChange={(e) => setFormData({...formData, target_type: e.target.value as TargetType})}
                   >
-                    <option value="Count">Count (Numeric)</option>
-                    <option value="Percentage">Percentage (0-100%)</option>
+                    <option value="Count">{t('assignments.type_count')}</option>
+                    <option value="Percentage">{t('assignments.type_percent')}</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor="target">Annual Target {formData.target_type === 'Percentage' ? '(%)' : ''}</Label>
+                  <Label htmlFor="target">{t('assignments.label_target')} {formData.target_type === 'Percentage' ? '(%)' : ''}</Label>
                   <Input 
                     id="target" 
                     type="number" 
@@ -350,30 +352,30 @@ export const AssignmentsPage = () => {
 
               {formData.target_type === 'Count' && (
                 <div>
-                  <Label htmlFor="unit">Unit (Optional)</Label>
+                  <Label htmlFor="unit">{t('assignments.label_unit')}</Label>
                   <Input 
                     id="unit" 
                     value={formData.unit}
                     onChange={(e) => setFormData({...formData, unit: e.target.value})}
-                    placeholder="e.g. audits, reports, sessions" 
+                    placeholder={t('assignments.placeholder_unit')} 
                   />
                 </div>
               )}
 
               <div>
-                <Label htmlFor="notes">Notes (Optional)</Label>
+                <Label htmlFor="notes">{t('assignments.label_notes')}</Label>
                 <textarea 
                   id="notes"
                   className="w-full min-h-[80px] rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900"
                   value={formData.notes}
                   onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  placeholder="Additional details..."
+                  placeholder={t('assignments.placeholder_notes')}
                 />
               </div>
 
               <div className="flex justify-end gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                <Button type="submit">Save Assignment</Button>
+                <Button type="button" variant="outline" onClick={() => setIsModalOpen(false)}>{t('assignments.btn_cancel')}</Button>
+                <Button type="submit">{t('assignments.btn_save')}</Button>
               </div>
             </form>
           </Card>
@@ -385,7 +387,7 @@ export const AssignmentsPage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
           <Card className="w-full max-w-2xl shadow-2xl">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-slate-900">Bulk Import Assignments</h2>
+              <h2 className="text-xl font-bold text-slate-900">{t('assignments.bulk_title')}</h2>
               <button onClick={() => setIsBulkOpen(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-6 h-6" />
               </button>
@@ -393,21 +395,21 @@ export const AssignmentsPage = () => {
 
             <div className="space-y-4">
               <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                <p className="text-sm text-indigo-800 font-medium">Format: Name | Category | Frequency | AnnualTarget</p>
-                <p className="text-xs text-indigo-600 mt-1">Example: Safety Audit | Operations | Monthly | 12</p>
+                <p className="text-sm text-indigo-800 font-medium">{t('assignments.bulk_format')}</p>
+                <p className="text-xs text-indigo-600 mt-1">{t('assignments.bulk_example')}</p>
               </div>
 
               <textarea 
                 className="w-full min-h-[300px] rounded-lg border border-slate-200 bg-white p-4 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-900"
-                placeholder="One assignment per line..."
+                placeholder={t('assignments.bulk_placeholder')}
                 value={bulkText}
                 onChange={(e) => setBulkText(e.target.value)}
               />
 
               <div className="flex justify-end gap-3">
-                <Button variant="outline" onClick={() => setIsBulkOpen(false)}>Cancel</Button>
+                <Button variant="outline" onClick={() => setIsBulkOpen(false)}>{t('assignments.btn_cancel')}</Button>
                 <Button onClick={handleBulkImport} disabled={!bulkText.trim()}>
-                  Import {bulkText.trim().split('\n').filter(l => l.trim()).length} Assignments
+                  {t('assignments.btn_import')} {bulkText.trim().split('\n').filter(l => l.trim()).length}
                 </Button>
               </div>
             </div>

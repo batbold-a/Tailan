@@ -12,8 +12,10 @@ import { supabase } from '../lib/supabase';
 import { Assignment, MonthlyActual } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import { cn } from '../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const ActualPage = () => {
+  const { t, i18n } = useTranslation();
   const { session } = useAuth();
   const [assignments, setAssignments] = React.useState<Assignment[]>([]);
   const [plans, setPlans] = React.useState<Record<string, number>>({});
@@ -66,7 +68,7 @@ export const ActualPage = () => {
 
   const validate = (id: string, actual: number, plan: number) => {
     if (actual > plan) {
-      setErrors(prev => ({ ...prev, [id]: `Cannot exceed planned target (${plan})` }));
+      setErrors(prev => ({ ...prev, [id]: `${t('actual.error_exceeding')} (${plan})` }));
       return false;
     }
     setErrors(prev => {
@@ -92,10 +94,10 @@ export const ActualPage = () => {
     }));
 
     const { error } = await supabase.from('monthly_actual').upsert(upserts, {
-      onConflict: 'user_id,year,month,assignment_id'
+      onConflict: 'assignment_id,year,month'
     });
 
-    if (error) alert('Error saving actuals: ' + error.message);
+    if (error) alert(`${t('actual.alert_error')} ${error.message}`);
     setSaving(false);
   };
 
@@ -112,13 +114,13 @@ export const ActualPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Execution Log</h1>
-          <p className="text-slate-500 mt-1">Record completed counts and evidence for each assignment.</p>
+          <h1 className="text-3xl font-bold text-slate-900">{t('actual.title')}</h1>
+          <p className="text-slate-500 mt-1">{t('actual.subtitle')}</p>
         </div>
         <div className="flex items-center gap-4">
           {Object.keys(errors).length > 0 && (
             <span className="text-xs font-bold text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 animate-pulse">
-              Please fix errors before saving
+              {t('actual.error_alert')}
             </span>
           )}
           <div className="flex items-center bg-slate-100/50 border border-slate-200 rounded-2xl p-1 shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60">
@@ -126,7 +128,7 @@ export const ActualPage = () => {
               <ChevronLeft className="w-5 h-5" />
             </button>
             <div className="px-6 font-bold text-slate-900 min-w-[160px] text-center tracking-tight">
-              {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(year, month - 1))} {year}
+              {new Intl.DateTimeFormat(i18n.language === 'mn' ? 'mn-MN' : 'en-US', { month: 'long' }).format(new Date(year, month - 1))} {year}
             </div>
             <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white hover:shadow-sm rounded-xl text-slate-400 hover:text-slate-900 transition-all">
               <ChevronRight className="w-5 h-5" />
@@ -140,11 +142,11 @@ export const ActualPage = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                <th className="pb-3">Assignment</th>
-                <th className="pb-3 w-24 text-center">Planned</th>
-                <th className="pb-3 w-24 text-center">Completed</th>
-                <th className="pb-3">Evidence Link</th>
-                <th className="pb-3">Notes</th>
+                <th className="pb-3 px-4">{t('actual.col_assignment')}</th>
+                <th className="pb-3 px-4 w-32 text-center">{t('actual.col_planned')}</th>
+                <th className="pb-3 px-4 w-32 text-center">{t('actual.col_completed')}</th>
+                <th className="pb-3 px-4">{t('actual.col_evidence')}</th>
+                <th className="pb-3 px-4">{t('actual.col_notes')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -162,7 +164,7 @@ export const ActualPage = () => {
                     isDone && !hasError && "bg-emerald-50/20",
                     hasError && "bg-rose-50/30"
                   )}>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <div className="font-medium text-slate-900">{asg.name}</div>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[10px] font-bold uppercase text-slate-400">{asg.category}</span>
@@ -174,10 +176,10 @@ export const ActualPage = () => {
                         </span>
                       </div>
                     </td>
-                    <td className="py-4 text-center font-mono text-slate-400 font-bold">
+                    <td className="py-4 px-4 text-center font-mono text-slate-400 font-bold">
                       {plan === 0 ? '-' : `${plan}${asg.target_type === 'Percentage' ? '%' : ''}`}
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <div className="relative">
                         <Input 
                           type="number" 
@@ -207,11 +209,11 @@ export const ActualPage = () => {
                         <p className="text-[10px] text-rose-500 font-bold mt-1 ml-1">{hasError}</p>
                       )}
                     </td>
-                    <td className="py-4 px-2">
+                    <td className="py-4 px-4">
                       <div className="relative">
                         <LinkIcon className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
                         <Input 
-                          placeholder="https://..."
+                          placeholder={t('actual.placeholder_evidence')}
                           className="h-9 text-xs pl-7"
                           value={actuals[asg.id]?.evidence_link || ''}
                           onChange={(e) => setActuals({
@@ -221,11 +223,11 @@ export const ActualPage = () => {
                         />
                       </div>
                     </td>
-                    <td className="py-4">
+                    <td className="py-4 px-4">
                       <div className="relative">
                         <MessageSquare className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400" />
                         <Input 
-                          placeholder="Notes..."
+                          placeholder={t('actual.placeholder_notes')}
                           className="h-9 text-xs pl-7"
                           value={actuals[asg.id]?.notes || ''}
                           onChange={(e) => setActuals({
@@ -248,10 +250,10 @@ export const ActualPage = () => {
             onClick={handleSave} 
             disabled={saving || Object.keys(errors).length > 0}
           >
-            {saving ? 'Saving...' : (
+            {saving ? t('actual.btn_saving') : (
               <>
                 <CheckCircle2 className="w-5 h-5" />
-                Save Progress
+                {t('actual.btn_save')}
               </>
             )}
           </Button>

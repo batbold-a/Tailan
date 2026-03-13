@@ -14,8 +14,10 @@ import {
 } from 'lucide-react';
 import { Button, Input } from '../components/UI';
 import { cn } from '../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const LandingPage = () => {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900">
       {/* Navigation */}
@@ -28,15 +30,15 @@ export const LandingPage = () => {
                 <span className="text-2xl font-black tracking-tighter">Tailan</span>
               </div>
               <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-500">
-                <a href="#features" className="hover:text-slate-900 transition-colors">Features</a>
-                <a href="#pricing" className="hover:text-slate-900 transition-colors">Pricing</a>
-                <a href="#solutions" className="hover:text-slate-900 transition-colors">Solutions</a>
+                <a href="#features" className="hover:text-slate-900 transition-colors">{t('landing.nav_features')}</a>
+                <a href="#pricing" className="hover:text-slate-900 transition-colors">{t('landing.nav_pricing')}</a>
+                <a href="#solutions" className="hover:text-slate-900 transition-colors">{t('landing.nav_solutions')}</a>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Link to="/auth" className="text-sm font-bold text-slate-600 hover:text-slate-900 px-4">Log in</Link>
+              <Link to="/auth" className="text-sm font-bold text-slate-600 hover:text-slate-900 px-4">{t('landing.nav_login')}</Link>
               <Link to="/auth?signup=true">
-                <Button className="rounded-full px-6 bg-slate-900 hover:bg-slate-800 font-bold">Start free trial</Button>
+                <Button className="rounded-full px-6 bg-slate-900 hover:bg-slate-800 font-bold">{t('landing.nav_start_trial')}</Button>
               </Link>
             </div>
           </div>
@@ -54,28 +56,28 @@ export const LandingPage = () => {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-wider mb-6">
                 <Zap className="w-3 h-3 fill-indigo-600" />
-                New: Annual Forecasting 2.0
+                {t('landing.hero_badge')}
               </div>
               <h1 className="text-7xl sm:text-8xl font-black tracking-tighter leading-[0.9] text-slate-900 mb-8">
-                The platform <br /> 
-                <span className="text-indigo-600">for execution.</span>
+                {t('landing.hero_title_1')} <br /> 
+                <span className="text-indigo-600">{t('landing.hero_title_2')}</span>
               </h1>
               <p className="text-xl text-slate-500 leading-relaxed mb-10 max-w-lg">
-                Tailan helps high-performing teams plan, track, and report on their annual goals with precision. Built for clarity, designed for speed.
+                {t('landing.hero_desc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 max-w-md relative">
                   <Input 
-                    placeholder="Enter your work email" 
+                    placeholder={t('landing.hero_input')}
                     className="h-14 rounded-full pl-6 pr-32 border-slate-200 focus:ring-indigo-500"
                   />
                   <Button className="absolute right-1.5 top-1.5 h-11 rounded-full px-6 bg-slate-900 hover:bg-slate-800 font-bold">
-                    Start free trial
+                    {t('landing.nav_start_trial')}
                   </Button>
                 </div>
               </div>
               <p className="mt-4 text-xs text-slate-400 font-medium">
-                Try Tailan free for 3 days, no credit card required.
+                {t('landing.hero_subtext')}
               </p>
             </motion.div>
 
@@ -104,7 +106,7 @@ export const LandingPage = () => {
       {/* Trust Section */}
       <section className="py-12 border-y border-slate-100 bg-slate-50/30">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-8">Trusted by industry leaders</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-8">{t('landing.trust_title')}</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-40 grayscale">
             <span className="text-2xl font-black tracking-tighter">STRIPE</span>
             <span className="text-2xl font-black tracking-tighter">VERCEL</span>
@@ -119,27 +121,27 @@ export const LandingPage = () => {
       <section id="features" className="py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-5xl font-black tracking-tighter text-slate-900 mb-6">Everything you need to scale execution.</h2>
-            <p className="text-lg text-slate-500">Stop fighting spreadsheets. Tailan provides a unified system for your entire organization's work plan.</p>
+            <h2 className="text-5xl font-black tracking-tighter text-slate-900 mb-6">{t('landing.feat_title')}</h2>
+            <p className="text-lg text-slate-500">{t('landing.feat_desc')}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
               icon={ClipboardList}
-              title="Assignment Management"
-              description="Centralize every task, project, and recurring responsibility in one place."
+              title={t('landing.feat_1_title')}
+              description={t('landing.feat_1_desc')}
               color="indigo"
             />
             <FeatureCard 
               icon={CalendarRange}
-              title="Dynamic Planning"
-              description="Build monthly and annual targets that adapt to your team's capacity."
+              title={t('landing.feat_2_title')}
+              description={t('landing.feat_2_desc')}
               color="emerald"
             />
             <FeatureCard 
               icon={BarChart3}
-              title="Automated Reporting"
-              description="Generate boardroom-ready execution reports with a single click."
+              title={t('landing.feat_3_title')}
+              description={t('landing.feat_3_desc')}
               color="amber"
             />
           </div>
@@ -155,29 +157,32 @@ export const LandingPage = () => {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-5xl font-black tracking-tighter mb-6">Simple, transparent pricing.</h2>
-            <p className="text-indigo-200 text-lg">Choose the plan that's right for your business.</p>
+            <h2 className="text-5xl font-black tracking-tighter mb-6">{t('landing.price_title')}</h2>
+            <p className="text-indigo-200 text-lg">{t('landing.price_desc')}</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
             <PricingCard 
-              tier="Starter"
+              tier={t('landing.price_starter')}
               price="0"
-              description="Perfect for individuals tracking personal goals."
+              description={t('landing.price_starter_desc')}
               features={['Up to 5 assignments', 'Monthly tracking', 'Basic reports', 'Community support']}
+              t={t}
             />
             <PricingCard 
-              tier="Pro"
+              tier={t('landing.price_pro')}
               price="49"
-              description="Everything you need for a growing team."
+              description={t('landing.price_pro_desc')}
               features={['Unlimited assignments', 'Annual forecasting', 'Advanced analytics', 'Priority support', 'Evidence attachments']}
               featured
+              t={t}
             />
             <PricingCard 
-              tier="Enterprise"
-              price="Custom"
-              description="Advanced security and controls for large orgs."
+              tier={t('landing.price_ent')}
+              price={t('landing.price_custom')}
+              description={t('landing.price_ent_desc')}
               features={['SSO & SAML', 'Custom reporting', 'Dedicated manager', 'Audit logs', 'Unlimited users']}
+              t={t}
             />
           </div>
         </div>
@@ -189,19 +194,19 @@ export const LandingPage = () => {
           <div className="bg-indigo-50 rounded-[3rem] p-16 md:p-24 relative overflow-hidden">
             <div className="relative z-10">
               <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-slate-900 mb-8">
-                Ready to master <br /> your execution?
+                {t('landing.cta_title_1')} <br /> {t('landing.cta_title_2')}
               </h2>
               <p className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto">
-                Join over 10,000 teams who use Tailan to turn their annual plans into reality.
+                {t('landing.cta_desc')}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link to="/auth?signup=true">
                   <Button className="h-16 px-10 rounded-full bg-slate-900 hover:bg-slate-800 text-lg font-bold">
-                    Start free trial
+                    {t('landing.nav_start_trial')}
                   </Button>
                 </Link>
                 <Button variant="outline" className="h-16 px-10 rounded-full border-slate-200 text-lg font-bold bg-white">
-                  Contact sales
+                  {t('landing.btn_contact_sales')}
                 </Button>
               </div>
             </div>
@@ -222,42 +227,42 @@ export const LandingPage = () => {
                 <span className="text-2xl font-black tracking-tighter">Tailan</span>
               </div>
               <p className="text-slate-500 text-sm leading-relaxed">
-                The world's most intuitive execution platform for high-performing teams.
+                {t('landing.footer_desc')}
               </p>
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 mb-6">Product</h4>
+              <h4 className="font-bold text-slate-900 mb-6">{t('landing.footer_product')}</h4>
               <ul className="space-y-4 text-sm text-slate-500">
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Integrations</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Changelog</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_features')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_integ')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.nav_pricing')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_changelog')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 mb-6">Company</h4>
+              <h4 className="font-bold text-slate-900 mb-6">{t('landing.footer_company')}</h4>
               <ul className="space-y-4 text-sm text-slate-500">
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Terms</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_about')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_careers')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_privacy')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_terms')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-bold text-slate-900 mb-6">Connect</h4>
+              <h4 className="font-bold text-slate-900 mb-6">{t('landing.footer_connect')}</h4>
               <ul className="space-y-4 text-sm text-slate-500">
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">LinkedIn</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">GitHub</a></li>
-                <li><a href="#" className="hover:text-indigo-600 transition-colors">Discord</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_twitter')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_linkedin')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_github')}</a></li>
+                <li><a href="#" className="hover:text-indigo-600 transition-colors">{t('landing.footer_discord')}</a></li>
               </ul>
             </div>
           </div>
           <div className="pt-12 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-sm text-slate-400 font-medium">© 2026 Tailan. All rights reserved.</p>
+            <p className="text-sm text-slate-400 font-medium">{t('landing.footer_rights')}</p>
             <div className="flex items-center gap-6 text-slate-400">
               <Globe className="w-5 h-5" />
-              <span className="text-sm font-bold">English (US)</span>
+              <span className="text-sm font-bold">{t('landing.footer_lang')}</span>
             </div>
           </div>
         </div>
@@ -300,7 +305,7 @@ const FeatureCard = ({ icon: Icon, title, description, color }: any) => (
   </div>
 );
 
-const PricingCard = ({ tier, price, description, features, featured }: any) => (
+const PricingCard = ({ tier, price, description, features, featured, t }: any) => (
   <div className={cn(
     "p-10 rounded-[2.5rem] flex flex-col transition-all duration-500",
     featured 
@@ -311,9 +316,9 @@ const PricingCard = ({ tier, price, description, features, featured }: any) => (
       <h3 className="text-xl font-bold mb-2">{tier}</h3>
       <div className="flex items-baseline gap-1">
         <span className="text-5xl font-black tracking-tighter">
-          {price === 'Custom' ? price : `$${price}`}
+          {price === t('landing.price_custom') ? price : `$${price}`}
         </span>
-        {price !== 'Custom' && <span className={cn("text-sm font-bold", featured ? "text-slate-400" : "text-slate-500")}>/mo</span>}
+        {price !== t('landing.price_custom') && <span className={cn("text-sm font-bold", featured ? "text-slate-400" : "text-slate-500")}>/mo</span>}
       </div>
       <p className={cn("mt-4 text-sm leading-relaxed", featured ? "text-slate-500" : "text-slate-400")}>{description}</p>
     </div>
@@ -333,7 +338,7 @@ const PricingCard = ({ tier, price, description, features, featured }: any) => (
         ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
         : "bg-white hover:bg-slate-100 text-slate-900"
     )}>
-      {price === 'Custom' ? 'Contact sales' : 'Start free trial'}
+      {price === t('landing.price_custom') ? t('landing.btn_contact_sales') : t('landing.nav_start_trial')}
     </Button>
   </div>
 );

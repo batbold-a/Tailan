@@ -13,8 +13,10 @@ import {
 import { supabase } from '../lib/supabase';
 import { Button } from './UI';
 import { cn } from '../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
+  const { t, i18n } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -24,11 +26,11 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const navItems = [
-    { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/assignments', icon: ClipboardList, label: 'Assignments' },
-    { to: '/plan', icon: CalendarRange, label: 'Plan' },
-    { to: '/actual', icon: CheckCircle2, label: 'Actual' },
-    { to: '/reports', icon: BarChart3, label: 'Reports' },
+    { to: '/', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { to: '/assignments', icon: ClipboardList, label: t('nav.assignments') },
+    { to: '/plan', icon: CalendarRange, label: t('nav.plan') },
+    { to: '/actual', icon: CheckCircle2, label: t('nav.actual') },
+    { to: '/reports', icon: BarChart3, label: t('nav.reports') },
   ];
 
   return (
@@ -89,14 +91,30 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               </nav>
             </div>
 
-            <div className="flex items-center gap-4">
-              <button 
-                className="md:hidden p-2 text-slate-600"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                {isMenuOpen ? <X /> : <Menu />}
-              </button>
-            </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => i18n.changeLanguage(i18n.language === 'en' ? 'mn' : 'en')}
+                  className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 text-sm hover:bg-slate-50 transition-colors bg-white font-medium"
+                  title={t(i18n.language === 'en' ? 'nav.switch_to_mn' : 'nav.switch_to_en')}
+                >
+                  {i18n.language === 'en' ? '🇲🇳' : '🇺🇸'}
+                </button>
+                
+                <button
+                  onClick={handleLogout}
+                  className="hidden md:flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-100 transition-all"
+                  title={t('nav.logout')}
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+
+                <button 
+                  className="md:hidden p-2 text-slate-600"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  {isMenuOpen ? <X /> : <Menu />}
+                </button>
+              </div>
           </div>
         </div>
 
@@ -129,7 +147,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
       <footer className="bg-white border-t border-slate-100 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center text-slate-400 text-sm font-medium">
-          &copy; {new Date().getFullYear()} Tailan. All rights reserved.
+          &copy; {new Date().getFullYear()} {t('footer.rights')}
         </div>
       </footer>
     </div>

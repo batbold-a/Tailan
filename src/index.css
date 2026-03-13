@@ -41,6 +41,10 @@
 
 /* Print Styles */
 @media print {
+  @page {
+    margin: 15mm;
+  }
+
   .print\:hidden {
     display: none !important;
   }
@@ -48,10 +52,13 @@
   body {
     background: white !important;
     padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   main {
     padding: 0 !important;
+    margin: 0 !important;
     max-width: none !important;
   }
 
@@ -59,19 +66,73 @@
     display: none !important;
   }
 
+  .glass {
+    background: white !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid #e2e8f0 !important;
+  }
+
   .card {
-    border: none !important;
+    border: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
-    padding: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 2rem !important;
+    overflow: visible !important;
+  }
+
+  .stat-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    background: white !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
 
   table {
     width: 100% !important;
     border-collapse: collapse !important;
+    page-break-after: auto;
+    overflow: visible !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
   }
 
   th, td {
     border-bottom: 1px solid #e2e8f0 !important;
+  }
+
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Force single column for grids in print if they don't fit */
+  .grid {
+    display: block !important;
+    overflow: visible !important;
+  }
+  
+  .grid > * {
+    margin-bottom: 1.5rem !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  /* Special case for 2x2 grid if requested, but generally vertical is safer for A4 */
+  .print\:grid-cols-2 {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
   }
 }
 

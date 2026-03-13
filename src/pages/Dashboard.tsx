@@ -25,8 +25,10 @@ import { supabase } from '../lib/supabase';
 import { Assignment } from '../types';
 import { Link } from 'react-router-dom';
 import { cn } from '../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export const Dashboard = () => {
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = React.useState(true);
   const [stats, setStats] = React.useState({
     totalPlanned: 0,
@@ -89,7 +91,7 @@ export const Dashboard = () => {
         const rate = tp > 0 ? (tc / tp) * 100 : 0;
         
         trend.push({
-          month: new Intl.DateTimeFormat('en-US', { month: 'short' }).format(d),
+          month: new Intl.DateTimeFormat(i18n.language === 'mn' ? 'mn-MN' : 'en-US', { month: 'short' }).format(d),
           rate
         });
       }
@@ -166,24 +168,24 @@ export const Dashboard = () => {
     <div className="space-y-8">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-          <p className="text-slate-500 mt-1">Overview for {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(2024, selectedMonth - 1))} {selectedYear}</p>
+          <h1 className="text-3xl font-bold text-slate-900">{t('dashboard.title')}</h1>
+          <p className="text-slate-500 mt-1">{t('dashboard.subtitle')} {new Intl.DateTimeFormat(i18n.language === 'mn' ? 'mn-MN' : 'en-US', { month: 'long' }).format(new Date(2024, selectedMonth - 1))} {selectedYear}</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button variant="outline" className="gap-2.5 h-12 px-6 rounded-2xl glass border-slate-200/60 shadow-sm hover:shadow-md transition-all" onClick={seedDemoData}>
             <Zap className="w-4 h-4 text-amber-500 fill-amber-500" />
-            <span className="font-bold">Seed Demo Data</span>
+            <span className="font-bold">{t('dashboard.seed_data')}</span>
           </Button>
           <Link to="/plan">
             <Button variant="outline" className="gap-2.5 h-12 px-6 rounded-2xl glass border-slate-200/60 shadow-sm hover:shadow-md transition-all">
               <Calendar className="w-4 h-4 text-slate-600" />
-              <span className="font-bold text-slate-700">Update Plan</span>
+              <span className="font-bold text-slate-700">{t('dashboard.update_plan')}</span>
             </Button>
           </Link>
           <Link to="/actual">
             <Button className="gap-2.5 h-12 px-8 rounded-2xl bg-slate-900 shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all">
               <Plus className="w-4 h-4" />
-              <span className="font-bold">Log Progress</span>
+              <span className="font-bold">{t('dashboard.log_progress')}</span>
             </Button>
           </Link>
         </div>
@@ -192,25 +194,25 @@ export const Dashboard = () => {
       {/* KPI Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
-          title="Total Planned" 
+          title={t('dashboard.stat_planned')} 
           value={stats.totalPlanned} 
           icon={Calendar} 
           color="indigo" 
         />
         <StatCard 
-          title="Total Completed" 
+          title={t('dashboard.stat_completed')} 
           value={stats.totalCompleted} 
           icon={CheckCircle2} 
           color="emerald" 
         />
         <StatCard 
-          title="Completion Rate" 
+          title={t('dashboard.stat_rate')} 
           value={`${stats.completionRate.toFixed(1)}%`} 
           icon={TrendingUp} 
           color="amber" 
         />
         <StatCard 
-          title="Behind Schedule" 
+          title={t('dashboard.stat_behind')} 
           value={stats.behindCount} 
           icon={AlertCircle} 
           color="rose" 
@@ -219,7 +221,7 @@ export const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Completion Rate Trend Chart */}
-        <Card title="Completion Rate Trend" subtitle="Performance over the last 6 months" className="lg:col-span-2">
+        <Card title={t('dashboard.chart_title')} subtitle={t('dashboard.chart_subtitle')} className="lg:col-span-2">
           {trendData.length > 0 ? (
             <div className="h-[340px] mt-4">
               <ResponsiveContainer width="100%" height="100%">
@@ -257,7 +259,7 @@ export const Dashboard = () => {
                           <div className="bg-white p-4 rounded-2xl shadow-2xl border border-slate-100 min-w-[150px]">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">{label}</p>
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-bold text-slate-900">Completion</span>
+                              <span className="text-sm font-bold text-slate-900">{t('dashboard.chart_completion')}</span>
                               <span className="text-lg font-black text-indigo-600">{payload[0].value?.toFixed(1)}%</span>
                             </div>
                           </div>
@@ -283,26 +285,26 @@ export const Dashboard = () => {
               <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="text-slate-900 font-medium">All caught up!</h3>
-              <p className="text-slate-500 text-sm mt-1">No assignments are currently behind schedule.</p>
+              <h3 className="text-slate-900 font-medium">{t('dashboard.all_caught_up')}</h3>
+              <p className="text-slate-500 text-sm mt-1">{t('dashboard.no_assignments_behind')}</p>
             </div>
           )}
         </Card>
 
         {/* Quick Actions / Tips */}
         <div className="space-y-6">
-          <Card title="Quick Links">
+          <Card title={t('dashboard.quick_links')}>
             <div className="space-y-3">
-              <QuickLink to="/assignments" label="Manage Assignments" />
-              <QuickLink to="/reports/monthly" label="View Monthly Report" />
-              <QuickLink to="/reports/annual" label="Annual Summary" />
+              <QuickLink to="/assignments" label={t('dashboard.manage_assignments')} />
+              <QuickLink to="/reports/monthly" label={t('dashboard.view_monthly')} />
+              <QuickLink to="/reports/annual" label={t('dashboard.annual_summary')} />
             </div>
           </Card>
           
           <Card className="bg-indigo-600 text-white border-none">
-            <h3 className="font-semibold text-lg mb-2">Pro Tip</h3>
+            <h3 className="font-semibold text-lg mb-2">{t('dashboard.pro_tip_title')}</h3>
             <p className="text-indigo-100 text-sm leading-relaxed">
-              Use the "Bulk Import" feature in Assignments to quickly set up your entire annual plan from a spreadsheet or text list.
+              {t('dashboard.pro_tip_desc')}
             </p>
           </Card>
         </div>

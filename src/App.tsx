@@ -11,6 +11,8 @@ import { PlanPage } from './pages/Plan';
 import { ActualPage } from './pages/Actual';
 import { ReportsPage } from './pages/Reports';
 import { LandingPage } from './pages/Landing';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, loading } = useAuth();
@@ -38,8 +40,10 @@ function AppContent() {
     <BrowserRouter>
       <Routes>
         <Route path="/auth" element={session ? <Navigate to="/" /> : <AuthPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         
-        <Route path="/" element={session ? <ProtectedRoute><Dashboard /></ProtectedRoute> : <LandingPage />} />
+        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/assignments" element={<ProtectedRoute><AssignmentsPage /></ProtectedRoute>} />
         <Route path="/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
         <Route path="/actual" element={<ProtectedRoute><ActualPage /></ProtectedRoute>} />

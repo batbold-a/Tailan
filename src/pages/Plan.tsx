@@ -11,8 +11,10 @@ import { supabase } from '../lib/supabase';
 import { Assignment } from '../types';
 import { cn } from '../lib/utils';
 import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export const PlanPage = () => {
+  const { t, i18n } = useTranslation();
   const { session } = useAuth();
   const [assignments, setAssignments] = React.useState<Assignment[]>([]);
   const [plans, setPlans] = React.useState<Record<string, number>>({});
@@ -61,10 +63,10 @@ export const PlanPage = () => {
     }));
 
     const { error } = await supabase.from('monthly_plan').upsert(upserts, {
-      onConflict: 'user_id,year,month,assignment_id'
+      onConflict: 'assignment_id,year,month'
     });
 
-    if (error) alert('Error saving plan: ' + error.message);
+    if (error) alert(`${t('plan.alert_error')} ${error.message}`);
     setSaving(false);
   };
 
@@ -91,15 +93,15 @@ export const PlanPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Monthly Planning</h1>
-          <p className="text-slate-500 mt-1">Set expected targets for each assignment.</p>
+          <h1 className="text-3xl font-bold text-slate-900">{t('plan.title')}</h1>
+          <p className="text-slate-500 mt-1">{t('plan.subtitle')}</p>
         </div>
         <div className="flex items-center bg-slate-100/50 border border-slate-200 rounded-2xl p-1 shadow-xl shadow-slate-200/50 transition-all hover:shadow-2xl hover:shadow-slate-200/60">
           <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white hover:shadow-sm rounded-xl text-slate-400 hover:text-slate-900 transition-all">
             <ChevronLeft className="w-5 h-5" />
           </button>
           <div className="px-6 font-bold text-slate-900 min-w-[160px] text-center tracking-tight">
-            {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(year, month - 1))} {year}
+            {new Intl.DateTimeFormat(i18n.language === 'mn' ? 'mn-MN' : 'en-US', { month: 'long' }).format(new Date(year, month - 1))} {year}
           </div>
           <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white hover:shadow-sm rounded-xl text-slate-400 hover:text-slate-900 transition-all">
             <ChevronRight className="w-5 h-5" />
@@ -109,10 +111,10 @@ export const PlanPage = () => {
 
       <Card>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold text-slate-900">Assignment Targets</h2>
+          <h2 className="text-lg font-semibold text-slate-900">{t('plan.targets')}</h2>
           <Button variant="outline" size="sm" className="gap-2" onClick={fillDefaults}>
             <Zap className="w-4 h-4 text-amber-500" />
-            Fill Defaults
+            {t('plan.fill_defaults')}
           </Button>
         </div>
 
@@ -120,10 +122,10 @@ export const PlanPage = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-100">
-                <th className="pb-3">Assignment</th>
-                <th className="pb-3">Category</th>
-                <th className="pb-3">Annual Target</th>
-                <th className="pb-3 w-32">Planned Count</th>
+                <th className="pb-3">{t('plan.col_assignment')}</th>
+                <th className="pb-3">{t('plan.col_category')}</th>
+                <th className="pb-3">{t('plan.col_annual')}</th>
+                <th className="pb-3 w-32">{t('plan.col_planned')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -144,7 +146,7 @@ export const PlanPage = () => {
                     </span>
                   </td>
                   <td className="py-4 text-sm text-slate-500">
-                    {asg.annual_target}{asg.target_type === 'Percentage' ? '%' : ''} total
+                    {asg.annual_target}{asg.target_type === 'Percentage' ? '%' : ''} {t('plan.target_total')}
                   </td>
                   <td className="py-4">
                     <div className="relative">
@@ -170,10 +172,10 @@ export const PlanPage = () => {
 
         <div className="mt-8 flex justify-end">
           <Button className="gap-2 px-8 py-6 text-base" onClick={handleSave} disabled={saving}>
-            {saving ? 'Saving...' : (
+            {saving ? t('plan.btn_saving') : (
               <>
                 <Save className="w-5 h-5" />
-                Save Monthly Plan
+                {t('plan.btn_save')}
               </>
             )}
           </Button>
