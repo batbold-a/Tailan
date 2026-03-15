@@ -14,6 +14,7 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { SubscribePage } from './pages/Subscribe';
 import { SettingsPage } from './pages/Settings';
+import { SuccessPage } from './pages/Success';
 
 // Protects routes: requires login + active subscription
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -62,6 +63,7 @@ function AppContent() {
 
         {/* Subscription page — accessible when logged in but not subscribed */}
         <Route path="/subscribe" element={<SubscribePage />} />
+        <Route path="/success" element={<SuccessPage />} />
 
         {/* Protected routes — require login + active subscription */}
         <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

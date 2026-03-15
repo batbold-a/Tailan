@@ -29,14 +29,39 @@ const features = [
 ];
 
 export const SubscribePage = () => {
-  const { session, refetchSubscription } = useAuth();
+  const { session, refetchSubscription, isSubscribed } = useAuth();
   const navigate = useNavigate();
   const [checking, setChecking] = React.useState(false);
 
-  // If not logged in, send to /auth
+  // If disconnected/not logged in, send to /auth
   React.useEffect(() => {
     if (!session) navigate('/auth');
   }, [session, navigate]);
+
+  // If subscription becomes active (e.g. from webhook), go to dashboard
+  React.useEffect(() => {
+    if (isSubscribed) {
+      navigate('/');
+    }
+  }, [isSubscribed, navigate]);
+
+  // Auto-refresh subscription status when returning to tab
+  React.useEffect(() => {
+    if (!session) return;
+    
+    const onFocus = () => refetchSubscription();
+    window.addEventListener('focus', onFocus);
+    
+    // Poll every 5 seconds while on this page to catch webhook updates
+    const interval = setInterval(() => {
+      refetchSubscription();
+    }, 5000);
+
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      clearInterval(interval);
+    };
+  }, [session, refetchSubscription]);
 
   const handleSubscribe = () => {
     if (!session) {
@@ -53,9 +78,34 @@ export const SubscribePage = () => {
 
   const handleAlreadySubscribed = async () => {
     setChecking(true);
+    // 1. Try to fetch the latest subscription status
     await refetchSubscription();
-    setChecking(false);
-    navigate('/');
+    
+    // 2. Wait slightly to see if the React effect auto-redirects us due to the state change
+    setTimeout(async () => {
+      // If we are still on this page after 1.5 seconds, the subscription is truly inactive.
+      // So we log out and send them to the login page so they can log into their paid account.
+      if (document.location.pathname === '/subscribe') {
+        await supabase.auth.signOut().catch(e => console.error(e));
+        navigate('/auth');
+      }
+      setChecking(false);
+    }, 1500);
+  };
+
+  // FOR LOCAL TESTING: Simulate a webhook success
+  const handleMockPayment = async () => {
+    if (!session?.user?.id) return;
+    try {
+      await supabase.from('subscriptions').upsert({
+        user_id: session.user.id,
+        status: 'active',
+        current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+      }, { onConflict: 'user_id' });
+      await refetchSubscription();
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   const handleLogout = async () => {
@@ -191,6 +241,29 @@ export const SubscribePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Temporary Debugging UI */}
+      <div className="fixed bottom-4 right-4 bg-slate-900 text-emerald-400 p-4 rounded-xl text-xs z-50 shadow-2xl border border-slate-700 max-w-sm font-mono break-all">
+        <h3 className="font-bold text-white mb-2 pb-1 border-b border-slate-700">DEBUG INFO</h3>
+        <p>User Auth State: {session ? 'Logged in' : 'Logged out'}</p>
+        <p>User ID: {session?.user?.id || 'N/A'}</p>
+        <p>Subscription State (isSubscribed): {isSubscribed ? 'TRUE' : 'FALSE'}</p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          <button 
+            onClick={() => refetchSubscription()} 
+            className="bg-slate-800 text-white px-2 py-1 rounded hover:bg-slate-700 border border-slate-700"
+          >
+            Force Refetch State
+          </button>
+          <button 
+            onClick={handleMockPayment} 
+            className="bg-emerald-600/20 text-emerald-400 px-2 py-1 rounded hover:bg-emerald-600/40 border border-emerald-500/30"
+          >
+            Simulate Webhook (Active)
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 };

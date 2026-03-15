@@ -55,9 +55,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setSubscriptionData({ status: data.status, current_period_end: data.current_period_end });
 
-      // Active if status is 'active' or 'on_trial' and period hasn't ended
+      // Active if status is 'active' or 'on_trial' or 'trialing' and period hasn't ended
       const isActive =
-        (data.status === 'active' || data.status === 'on_trial') &&
+        (data.status === 'active' || data.status === 'on_trial' || data.status === 'trialing') &&
         (!data.current_period_end || new Date(data.current_period_end) > new Date());
 
       setIsSubscribed(isActive);
