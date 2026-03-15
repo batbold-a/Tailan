@@ -6,6 +6,8 @@
       "plan": "Plan",
       "actual": "Actual",
       "reports": "Reports",
+      "settings": "Settings",
+      "logout": "Sign out",
       "switch_to_mn": "🇲🇳 Монгол MNG",
       "switch_to_en": "🇺🇸 US ENG"
     },

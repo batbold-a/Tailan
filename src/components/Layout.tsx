@@ -8,7 +8,8 @@ import {
   BarChart3, 
   LogOut,
   Menu,
-  X
+  X,
+  Settings
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { Button } from './UI';
@@ -31,6 +32,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
     { to: '/plan', icon: CalendarRange, label: t('nav.plan') },
     { to: '/actual', icon: CheckCircle2, label: t('nav.actual') },
     { to: '/reports', icon: BarChart3, label: t('nav.reports') },
+    { to: '/settings', icon: Settings, label: t('nav.settings') },
   ];
 
   return (

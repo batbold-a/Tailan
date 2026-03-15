@@ -2,11 +2,17 @@ import React from 'react';
 import { supabase } from '../lib/supabase';
 import { Session } from '@supabase/supabase-js';
 
+interface SubscriptionData {
+  status: string | null;
+  current_period_end: string | null;
+}
+
 interface AuthContextType {
   session: Session | null;
   loading: boolean;
   isSubscribed: boolean;
   subscriptionLoading: boolean;
+  subscriptionData: SubscriptionData | null;
   refetchSubscription: () => Promise<void>;
 }
 
@@ -15,6 +21,7 @@ export const AuthContext = React.createContext<AuthContextType>({
   loading: true,
   isSubscribed: false,
   subscriptionLoading: true,
+  subscriptionData: null,
   refetchSubscription: async () => {},
 });
 
@@ -23,6 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = React.useState(true);
   const [isSubscribed, setIsSubscribed] = React.useState(false);
   const [subscriptionLoading, setSubscriptionLoading] = React.useState(true);
+  const [subscriptionData, setSubscriptionData] = React.useState<{ status: string | null; current_period_end: string | null } | null>(null);
 
   const checkSubscription = React.useCallback(async (userId: string) => {
     setSubscriptionLoading(true);
@@ -41,8 +49,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!data) {
         setIsSubscribed(false);
+        setSubscriptionData(null);
         return;
       }
+
+      setSubscriptionData({ status: data.status, current_period_end: data.current_period_end });
 
       // Active if status is 'active' or 'on_trial' and period hasn't ended
       const isActive =
@@ -87,7 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [checkSubscription]);
 
   return (
-    <AuthContext.Provider value={{ session, loading, isSubscribed, subscriptionLoading, refetchSubscription }}>
+    <AuthContext.Provider value={{ session, loading, isSubscribed, subscriptionLoading, subscriptionData, refetchSubscription }}>
       {children}
     </AuthContext.Provider>
   );

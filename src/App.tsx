@@ -13,6 +13,7 @@ import { ReportsPage } from './pages/Reports';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { SubscribePage } from './pages/Subscribe';
+import { SettingsPage } from './pages/Settings';
 
 // Protects routes: requires login + active subscription
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -68,6 +69,7 @@ function AppContent() {
         <Route path="/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
         <Route path="/actual" element={<ProtectedRoute><ActualPage /></ProtectedRoute>} />
         <Route path="/reports/*" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
