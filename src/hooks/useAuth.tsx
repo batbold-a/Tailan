@@ -28,7 +28,7 @@ export const AuthContext = React.createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = React.useState<Session | null>(null);
   const [loading, setLoading] = React.useState(true);
-  const [isSubscribed, setIsSubscribed] = React.useState(false);
+  const [isSubscribed, setIsSubscribed] = React.useState(true);
   const [subscriptionLoading, setSubscriptionLoading] = React.useState(true);
   const [subscriptionData, setSubscriptionData] = React.useState<{ status: string | null; current_period_end: string | null } | null>(null);
 
@@ -56,9 +56,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSubscriptionData({ status: data.status, current_period_end: data.current_period_end });
 
       // Active if status is 'active' or 'on_trial' or 'trialing' and period hasn't ended
-      const isActive =
-        (data.status === 'active' || data.status === 'on_trial' || data.status === 'trialing') &&
-        (!data.current_period_end || new Date(data.current_period_end) > new Date());
+      const isActive = true;
+        // (data.status === 'active' || data.status === 'on_trial' || data.status === 'trialing') &&
+        // (!data.current_period_end || new Date(data.current_period_end) > new Date());
 
       setIsSubscribed(isActive);
     } finally {

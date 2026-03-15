@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (loading || subscriptionLoading) return <LoadingView />;
   if (!session) return <Navigate to="/auth" />;
-  if (!isSubscribed) return <Navigate to="/subscribe" />;
+  // if (!isSubscribed) return <Navigate to="/subscribe" />;
 
   return <Layout>{children}</Layout>;
 };
