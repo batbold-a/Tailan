@@ -30,7 +30,7 @@ export const ConfigWarning = () => {
                 <li>Create a project at <a href="https://supabase.com" target="_blank" rel="noreferrer" className="text-indigo-600 underline">supabase.com</a></li>
                 <li>Go to Project Settings &gt; API</li>
                 <li>Copy the Project URL and anon key</li>
-                <li>Add them to the "Secrets" panel in AI Studio</li>
+                <li>Add them to the "Secrets" panel in Tailan settings</li>
               </ol>
             </div>
           </div>
