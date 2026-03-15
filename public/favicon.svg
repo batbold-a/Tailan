@@ -1,14 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <defs>
-    <linearGradient id="logoBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#004e92" />
-      <stop offset="100%" stopColor="#000428" />
-    </linearGradient>
-    <linearGradient id="logoGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stopColor="#56ab2f" />
-      <stop offset="100%" stopColor="#a8e063" />
-    </linearGradient>
-  </defs>
-  <path d="M10,35 L55,35 L50,48 L42,48 L30,85 L15,85 L27,48 L15,48 Z" fill="url(#logoBlue)" />
-  <path d="M52,85 L64,48 C66,38 75,35 90,35 L90,48 C80,48 78,52 76,60 L64,85 Z" fill="url(#logoGreen)" />
+  <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#818cf8" />
+    <stop offset="100%" stop-color="#4f46e5" />
+  </linearGradient>
+  <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#34d399" />
+    <stop offset="100%" stop-color="#10b981" />
+  </linearGradient>
+  <path d="M10,35 L55,35 L50,48 L42,48 L30,85 L15,85 L27,48 L15,48 Z" fill="url(#g1)" />
+  <path d="M52,85 L64,48 C66,38 75,35 90,35 L90,48 C80,48 78,52 76,60 L64,85 Z" fill="url(#g2)" />
 </svg>
