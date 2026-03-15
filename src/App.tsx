@@ -10,16 +10,18 @@ import { AssignmentsPage } from './pages/Assignments';
 import { PlanPage } from './pages/Plan';
 import { ActualPage } from './pages/Actual';
 import { ReportsPage } from './pages/Reports';
-import { LandingPage } from './pages/Landing';
 import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
+import { SubscribePage } from './pages/Subscribe';
 
+// Protects routes: requires login + active subscription
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session, loading } = useAuth();
-  
-  if (loading) return null;
+  const { session, loading, isSubscribed, subscriptionLoading } = useAuth();
+
+  if (loading || subscriptionLoading) return <LoadingView />;
   if (!session) return <Navigate to="/auth" />;
-  
+  if (!isSubscribed) return <Navigate to="/subscribe" />;
+
   return <Layout>{children}</Layout>;
 };
 
@@ -52,16 +54,21 @@ function AppContent() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
         <Route path="/auth" element={session ? <Navigate to="/" /> : <AuthPage />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        
+
+        {/* Subscription page — accessible when logged in but not subscribed */}
+        <Route path="/subscribe" element={<SubscribePage />} />
+
+        {/* Protected routes — require login + active subscription */}
         <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/assignments" element={<ProtectedRoute><AssignmentsPage /></ProtectedRoute>} />
         <Route path="/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
         <Route path="/actual" element={<ProtectedRoute><ActualPage /></ProtectedRoute>} />
         <Route path="/reports/*" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-        
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

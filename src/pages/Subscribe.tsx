@@ -1,0 +1,198 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../lib/supabase';
+import {
+  CheckCircle2,
+  Loader2,
+  BarChart3,
+  FileSpreadsheet,
+  FileText,
+  Users,
+  CloudLock,
+  ClipboardList,
+  LogOut,
+} from 'lucide-react';
+import { motion } from 'motion/react';
+import { Trans, useTranslation } from 'react-i18next';
+
+const CHECKOUT_URL =
+  (import.meta as any).env.VITE_LEMONSQUEEZY_CHECKOUT_URL ||
+  'https://tailan.lemonsqueezy.com/buy/YOUR_VARIANT_ID';
+
+const features = [
+  { icon: ClipboardList, label: 'Ажилтны тайлангийн хяналт' },
+  { icon: BarChart3,     label: 'Гүйцэтгэлийн dashboard' },
+  { icon: FileSpreadsheet, label: 'Excel экспорт' },
+  { icon: FileText,      label: 'PDF экспорт' },
+  { icon: Users,         label: 'Багийн үйл ажиллагааны тойм' },
+  { icon: CloudLock,     label: 'Аюулгүй үүлэн хандалт' },
+];
+
+export const SubscribePage = () => {
+  const { session, refetchSubscription } = useAuth();
+  const navigate = useNavigate();
+  const { i18n } = useTranslation();
+  const [checking, setChecking] = React.useState(false);
+
+  // If not logged in, send to /auth
+  React.useEffect(() => {
+    if (!session) navigate('/auth');
+  }, [session, navigate]);
+
+  const handleSubscribe = () => {
+    if (!session) {
+      navigate('/auth');
+      return;
+    }
+    const email = session.user.email || '';
+    const url = new URL(CHECKOUT_URL);
+    if (email) url.searchParams.set('checkout[email]', email);
+    // Pass user_id as custom data so webhooks can link the subscription
+    url.searchParams.set('checkout[custom][user_id]', session.user.id);
+    window.open(url.toString(), '_blank');
+  };
+
+  const handleAlreadySubscribed = async () => {
+    setChecking(true);
+    await refetchSubscription();
+    setChecking(false);
+    navigate('/');
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/auth');
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
+
+        {/* Left Side: Branding */}
+        <div className="hidden lg:flex flex-col justify-between p-12 bg-slate-900 text-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-transparent pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl" />
+
+          <div className="relative z-10">
+            {/* Logo */}
+            <div className="flex items-center gap-3 mb-12">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
+                  <defs>
+                    <linearGradient id="subLogoBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#818cf8" />
+                      <stop offset="100%" stopColor="#4f46e5" />
+                    </linearGradient>
+                    <linearGradient id="subLogoGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#34d399" />
+                      <stop offset="100%" stopColor="#10b981" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M10,35 L55,35 L50,48 L42,48 L30,85 L15,85 L27,48 L15,48 Z" fill="url(#subLogoBlue)" />
+                  <path d="M52,85 L64,48 C66,38 75,35 90,35 L90,48 C80,48 78,52 76,60 L64,85 Z" fill="url(#subLogoGreen)" />
+                </svg>
+              </div>
+              <span className="text-2xl font-black tracking-tighter">Tailan</span>
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-5xl font-black leading-tight mb-6 tracking-tight">
+                Бүтээмжтэй<br />
+                <span className="text-indigo-400">ажиллаарай.</span>
+              </h2>
+              <p className="text-slate-400 text-lg leading-relaxed max-w-sm font-medium">
+                Ажилтнуудын гүйцэтгэлийг хянаж, сарын тайланг автоматаар үүсгэх хамгийн хялбар арга.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="relative z-10 flex items-center gap-8 mt-12 pb-4 border-b border-white/10">
+            <div>
+              <p className="text-3xl font-black text-white">7 хоног</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Үнэгүй туршилт</p>
+            </div>
+            <div>
+              <p className="text-3xl font-black text-white">2к+</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Идэвхтэй хэрэглэгч</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Pricing Card */}
+        <div className="p-8 lg:p-16 flex flex-col justify-center">
+          <div className="max-w-sm mx-auto w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Plan badge */}
+              <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                Tailan Pro
+              </div>
+
+              <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-1">
+                9,900₮
+              </h1>
+              <p className="text-slate-500 font-medium mb-2">сард нэг удаа • татвар оруулаад</p>
+              <p className="text-emerald-600 text-sm font-bold mb-8 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" />
+                7 хоногийн үнэгүй туршилт — карт шаардахгүй
+              </p>
+
+              {/* Features */}
+              <ul className="space-y-3 mb-10">
+                {features.map(({ icon: Icon, label }) => (
+                  <li key={label} className="flex items-center gap-3 text-sm text-slate-700 font-medium">
+                    <span className="w-7 h-7 rounded-xl bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-3.5 h-3.5 text-indigo-600" />
+                    </span>
+                    {label}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Subscribe button */}
+              <button
+                onClick={handleSubscribe}
+                className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-indigo-700 text-white font-bold text-base shadow-xl shadow-slate-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 mb-4"
+              >
+                7 хоног үнэгүй эхлэх →
+              </button>
+
+              {/* Already subscribed */}
+              <button
+                onClick={handleAlreadySubscribed}
+                disabled={checking}
+                className="w-full h-10 rounded-xl border border-slate-100 hover:bg-slate-50 text-slate-500 text-sm font-medium flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              >
+                {checking ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Аль хэдийн захиалсан — нэвтрэх
+              </button>
+            </motion.div>
+
+            {/* Footer */}
+            <footer className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between">
+              <p className="text-[11px] text-slate-400">
+                {session?.user?.email}
+              </p>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 text-[11px] text-slate-400 hover:text-rose-500 transition-colors font-medium"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                Гарах
+              </button>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
