@@ -17,7 +17,7 @@ import { motion } from 'motion/react';
 
 const CHECKOUT_URL =
   (import.meta as any).env.VITE_LEMONSQUEEZY_CHECKOUT_URL ||
-  'https://tailan.lemonsqueezy.com/buy/YOUR_VARIANT_ID';
+  'https://tailanos.lemonsqueezy.com/checkout/buy/32d6a4a7-a10c-4399-84fc-48589315860f';
 
 const features = [
   { icon: ClipboardList,  label: 'Ажилтны тайлангийн хяналт' },
