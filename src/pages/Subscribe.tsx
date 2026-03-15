@@ -9,30 +9,28 @@ import {
   FileSpreadsheet,
   FileText,
   Users,
-  CloudLock,
+  Shield,
   ClipboardList,
   LogOut,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Trans, useTranslation } from 'react-i18next';
 
 const CHECKOUT_URL =
   (import.meta as any).env.VITE_LEMONSQUEEZY_CHECKOUT_URL ||
   'https://tailan.lemonsqueezy.com/buy/YOUR_VARIANT_ID';
 
 const features = [
-  { icon: ClipboardList, label: 'Ажилтны тайлангийн хяналт' },
-  { icon: BarChart3,     label: 'Гүйцэтгэлийн dashboard' },
+  { icon: ClipboardList,  label: 'Ажилтны тайлангийн хяналт' },
+  { icon: BarChart3,      label: 'Гүйцэтгэлийн dashboard' },
   { icon: FileSpreadsheet, label: 'Excel экспорт' },
-  { icon: FileText,      label: 'PDF экспорт' },
-  { icon: Users,         label: 'Багийн үйл ажиллагааны тойм' },
-  { icon: CloudLock,     label: 'Аюулгүй үүлэн хандалт' },
+  { icon: FileText,       label: 'PDF экспорт' },
+  { icon: Users,          label: 'Багийн үйл ажиллагааны тойм' },
+  { icon: Shield,         label: 'Аюулгүй үүлэн хандалт' },
 ];
 
 export const SubscribePage = () => {
   const { session, refetchSubscription } = useAuth();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
   const [checking, setChecking] = React.useState(false);
 
   // If not logged in, send to /auth
